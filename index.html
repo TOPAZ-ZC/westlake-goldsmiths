@@ -12,7 +12,7 @@
   <link rel="canonical" href="https://www.westlakegoldsmiths.com/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Libre+Franklin:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,25 +20,25 @@
     /* ── Custom Scrollbar ── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: rgba(180,160,120,.3); border-radius: 2px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(180,160,120,.5); }
+    ::-webkit-scrollbar-thumb { background: rgba(139,115,85,.3); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(139,115,85,.5); }
 
     /* ── Variables ── */
     :root {
-      --gold: #B4944E;
-      --gold-light: #8C7038;
-      --gold-faint: rgba(180,148,78,.08);
+      --gold: #8b7355;
+      --gold-light: #6b5a42;
+      --gold-faint: rgba(139,115,85,.08);
       --cream: #FAF8F5;
       --cream-warm: #F5F0EA;
-      --bg: #FDFCFA;
+      --bg: #fefdfb;
       --bg-card: #FFFFFF;
       --bg-section: #F7F4F0;
-      --text-primary: #1A1A1A;
-      --text-secondary: #5A5650;
-      --text-muted: #8C8680;
-      --border: rgba(180,148,78,.15);
-      --font-serif: 'Playfair Display', Georgia, serif;
-      --font-sans: 'Libre Franklin', system-ui, sans-serif;
+      --text-primary: #2c2c2c;
+      --text-secondary: #5a4d3e;
+      --text-muted: #a0937e;
+      --border: rgba(139,115,85,.15);
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Quicksand', system-ui, sans-serif;
     }
 
     /* ── Base ── */
@@ -59,7 +59,7 @@
 
     /* ── Utility ── */
     .gold-text {
-      background: linear-gradient(135deg, #B4944E, #C8AD6E, #B4944E);
+      background: linear-gradient(135deg, #8b7355, #a89070, #8b7355);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -81,8 +81,8 @@
       to { width: 60px; }
     }
     @keyframes goldPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
-      50% { box-shadow: 0 0 30px 4px rgba(212,175,55,.15); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(139,115,85,0); }
+      50% { box-shadow: 0 0 30px 4px rgba(139,115,85,.15); }
     }
     @keyframes breathe {
       0%, 100% { transform: scale(1); }
@@ -373,7 +373,7 @@
       transition: border-color .4s, transform .4s, box-shadow .4s;
     }
     .gallery-item:hover {
-      border-color: rgba(180,148,78,.3);
+      border-color: rgba(139,115,85,.3);
       transform: translateY(-4px);
       box-shadow: 0 12px 40px rgba(0,0,0,.06);
     }
@@ -462,7 +462,7 @@
       font-size: 1.4rem;
       color: rgba(255,255,255,.55);
       line-height: 1.6;
-      border-left: 2px solid rgba(180,148,78,.4);
+      border-left: 2px solid rgba(139,115,85,.4);
       padding-left: 24px;
     }
 
@@ -485,14 +485,14 @@
       transition: border-color .4s, box-shadow .4s;
     }
     .step:hover {
-      border-color: rgba(180,148,78,.3);
+      border-color: rgba(139,115,85,.3);
       box-shadow: 0 8px 30px rgba(0,0,0,.04);
     }
     .step-number {
       font-family: var(--font-serif);
       font-size: 3rem;
       font-weight: 400;
-      color: rgba(180,148,78,.2);
+      color: rgba(139,115,85,.2);
       line-height: 1;
       margin-bottom: 20px;
     }
@@ -591,7 +591,7 @@
     .progress-segment {
       flex: 1;
       height: 2px;
-      background: rgba(180,148,78,.15);
+      background: rgba(139,115,85,.15);
       border-radius: 1px;
       overflow: hidden;
       transition: background .4s;
@@ -600,7 +600,7 @@
       background: var(--gold);
     }
     .progress-segment.completed {
-      background: rgba(180,148,78,.45);
+      background: rgba(139,115,85,.45);
     }
 
     /* Form Steps */
@@ -641,12 +641,12 @@
       text-align: left;
     }
     .option-card:hover {
-      border-color: rgba(180,148,78,.4);
+      border-color: rgba(139,115,85,.4);
       background: var(--gold-faint);
     }
     .option-card.selected {
       border-color: var(--gold);
-      background: rgba(180,148,78,.08);
+      background: rgba(139,115,85,.08);
     }
     .option-card.selected::after {
       content: '';
@@ -881,7 +881,7 @@
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <p class="hero-location tracking-wide">Austin, Texas</p>
-        <h1 style="color:#fff;">Westlake<br>Goldsmiths</h1>
+        <h1 style="color:#fff; text-transform:uppercase; letter-spacing:.15em;">Westlake<br>Goldsmiths</h1>
         <p class="hero-sub">Bespoke fine jewelry, hand-crafted with passion, integrity, and care.</p>
         <a href="#" class="btn-primary" onclick="showDesign(); return false;">Begin Your Piece</a>
       </div>
