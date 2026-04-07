@@ -1945,7 +1945,7 @@
         // Show success immediately — uploads happen in background
         document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
         document.getElementById('formSuccess').classList.add('active');
-        document.querySelector('.progress-bar').style.display = 'none';
+        document.querySelector('.progress-row').style.display = 'none';
 
         // Upload inspo images to Cloudinary (if any)
         let imageUrls = [];
@@ -1988,7 +1988,7 @@
         });
         document.querySelectorAll('.form-input, .form-textarea').forEach(i => { i.value = ''; });
         document.getElementById('formSuccess').classList.remove('active');
-        document.querySelector('.progress-bar').style.display = '';
+        document.querySelector('.progress-row').style.display = '';
         renderPreviews();
         updateProgress();
         updateStepButtons(document.querySelector('[data-step="1"]'));
