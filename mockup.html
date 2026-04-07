@@ -848,27 +848,31 @@
 
         .ring-size-row {
             display: none;
-            padding: 20px 24px;
+            padding: 14px 24px;
             background: rgba(139,115,85,0.04);
             border: 1px solid rgba(139,115,85,0.15);
             border-radius: 4px;
             animation: fadeInUp 0.4s ease forwards;
+            align-items: center;
+            gap: 16px;
         }
 
-        .ring-size-row.visible { display: block; }
+        .ring-size-row.visible { display: flex; }
 
         .ring-size-row label {
             font-family: var(--heading);
             font-size: 1.1rem;
             font-weight: 400;
-            display: block;
-            margin-bottom: 8px;
             color: var(--earth);
+            white-space: nowrap;
+            margin: 0;
         }
 
         .ring-size-select {
-            width: 100%;
-            max-width: 280px;
+            width: auto;
+            min-width: 160px;
+            flex: 1;
+            max-width: 220px;
             padding: 14px 20px;
             background: #fff;
             border: 1px solid rgba(139,115,85,0.15);
