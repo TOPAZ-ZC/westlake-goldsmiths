@@ -790,6 +790,9 @@
             cursor: pointer;
             transition: all 0.3s;
             text-align: left;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .option-card:hover {
@@ -1645,7 +1648,11 @@
                         .map(c => c.dataset.value);
                     formData[grid.dataset.field] = selected.join(', ');
                 } else {
-                    grid.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                    // Single select — deselect ALL cards in this grid first
+                    const allCards = grid.querySelectorAll('.option-card');
+                    for (let i = 0; i < allCards.length; i++) {
+                        allCards[i].classList.remove('selected');
+                    }
                     card.classList.add('selected');
                     formData[grid.dataset.field] = card.dataset.value;
                 }
