@@ -1371,6 +1371,14 @@
                         <p class="option-card-title">Rose Gold</p>
                         <p class="option-card-sub">Romantic, warm, unique</p>
                     </div>
+                    <div class="ring-size-row" id="karatRowWR" style="grid-column: 1 / -1;">
+                        <label>Gold Purity</label>
+                        <select class="ring-size-select" id="karatSelectWR">
+                            <option value="">Select purity...</option>
+                            <option value="14K">14K</option>
+                            <option value="18K">18K</option>
+                        </select>
+                    </div>
                     <div class="option-card" data-value="Platinum">
                         <p class="option-card-title">Platinum</p>
                         <p class="option-card-sub">The ultimate precious metal</p>
@@ -1670,14 +1678,17 @@
                 const hasSelection = grid.querySelector('.option-card.selected');
                 if (btn) btn.disabled = !hasSelection;
 
-                // Show karat selector when Yellow Gold is chosen
+                // Show karat selector when gold is chosen
                 if (grid.dataset.field === 'metal') {
                     const isYellow = card.dataset.value === 'Yellow Gold';
+                    const isWR = card.dataset.value === 'White Gold' || card.dataset.value === 'Rose Gold';
                     document.getElementById('karatRow').classList.toggle('visible', isYellow);
-                    if (!isYellow) {
+                    document.getElementById('karatRowWR').classList.toggle('visible', isWR);
+                    if (!isYellow && !isWR) {
                         formData.karat = '';
-                        document.getElementById('karatSelect').value = '';
                     }
+                    if (!isYellow) document.getElementById('karatSelect').value = '';
+                    if (!isWR) document.getElementById('karatSelectWR').value = '';
                 }
 
                 // Show ring size selector when ring type is chosen
@@ -1703,7 +1714,7 @@
 
     function nextStep() {
         if (currentStep === 1) formData.ringSize = document.getElementById('ringSizeSelect').value || '';
-        if (currentStep === 2) formData.karat = document.getElementById('karatSelect').value || '';
+        if (currentStep === 2) formData.karat = document.getElementById('karatSelect').value || document.getElementById('karatSelectWR').value || '';
         if (currentStep === 4) formData.style = document.getElementById('styleInput').value;
         if (currentStep < totalSteps) {
             document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
@@ -1781,6 +1792,8 @@
         document.getElementById('ringSizeSelect').value = '';
         document.getElementById('karatRow').classList.remove('visible');
         document.getElementById('karatSelect').value = '';
+        document.getElementById('karatRowWR').classList.remove('visible');
+        document.getElementById('karatSelectWR').value = '';
         inspoFiles = [];
         document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
         document.querySelector('[data-step="1"]').classList.add('active');
