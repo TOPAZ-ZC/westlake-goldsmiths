@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Westlake Goldsmiths — Bespoke Fine Jewelry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ── Kudryashev Display Sans — brand name only ── */
+        /* Place font files in /fonts/ directory:
+           kudryashev-display-sans.woff2, kudryashev-display-sans.woff */
+        @font-face {
+            font-family: 'Kudryashev Display Sans';
+            src: url('fonts/kudryashev-display-sans.woff2') format('woff2'),
+                 url('fonts/kudryashev-display-sans.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* ── RESET & BASE ──────────────────────────────── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --stone:     #8b7355;
+            --earth:     #3d3226;
+            --shadow:    #5a4d3e;
+            --dusk:      #a0937e;
+            --cream:     #fefdfb;
+            --deep:      #1a1512;
+            --warm-gray: #b8a89a;
+            --heading:   'Cormorant Garamond', Georgia, serif;
+            --body:      'Jost', 'Gill Sans', sans-serif;
+            --brand:     'Kudryashev Display Sans', 'Cormorant Garamond', Georgia, serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--body);
+            font-weight: 400;
+            color: var(--earth);
+            background: var(--cream);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* ── TYPOGRAPHY ────────────────────────────────── */
+        h1, h2, h3 {
+            font-family: var(--heading);
+            font-weight: 400;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── NAVIGATION ────────────────────────────────── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.8rem 4rem;
+            transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
+        }
+
+        nav.scrolled {
+            background: rgba(30, 25, 20, 0.92);
+            backdrop-filter: blur(12px);
+            padding: 1rem 4rem;
+        }
+
+        nav .logo {
+            font-family: var(--brand);
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: var(--cream);
+            text-transform: uppercase;
+        }
+
+        nav .links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        nav .links a {
+            font-family: var(--body);
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            color: rgba(254, 253, 251, 0.8);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        nav .links a:hover { color: var(--cream); }
+
+        nav .cta-btn {
+            font-family: var(--body);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--cream);
+            background: transparent;
+            border: 1px solid rgba(254, 253, 251, 0.4);
+            padding: 0.7rem 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        nav .cta-btn:hover {
+            background: var(--cream);
+            color: var(--earth);
+            border-color: var(--cream);
+        }
+
+        /* ── HERO ──────────────────────────────────────── */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: var(--deep);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg,
+                    rgba(26, 21, 18, 0.3) 0%,
+                    rgba(26, 21, 18, 0.1) 40%,
+                    rgba(26, 21, 18, 0.2) 70%,
+                    rgba(26, 21, 18, 0.6) 100%
+                ),
+                url('https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=1920&q=80') center/cover no-repeat;
+            transform: scale(1.05);
+            animation: heroBreath 20s ease-in-out infinite;
+        }
+
+        @keyframes heroBreath {
+            0%, 100% { transform: scale(1.05); }
+            50% { transform: scale(1.0); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: var(--brand);
+            font-size: clamp(3.2rem, 6.5vw, 5.8rem);
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            line-height: 0.9;
+            color: var(--cream);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .hero .tagline {
+            font-family: var(--heading);
+            font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+            font-weight: 400;
+            font-style: italic;
+            color: rgba(254, 253, 251, 0.8);
+            letter-spacing: 0.05em;
+            margin-bottom: 3rem;
+        }
+
+        .hero .hero-cta {
+            display: inline-block;
+            font-family: var(--body);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--cream);
+            border: 1px solid rgba(254, 253, 251, 0.7);
+            padding: 1.1rem 3.5rem;
+            text-decoration: none;
+            transition: all 0.5s;
+            box-shadow: 0 0 20px rgba(184, 156, 110, 0.2), 0 0 60px rgba(184, 156, 110, 0.1);
+        }
+
+        .hero .hero-cta:hover {
+            border-color: rgba(254, 253, 251, 0.95);
+            background: rgba(184, 156, 110, 0.1);
+            color: var(--cream);
+            box-shadow: 0 0 30px rgba(184, 156, 110, 0.35), 0 0 80px rgba(184, 156, 110, 0.18);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .scroll-hint span {
+            display: block;
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, rgba(254,253,251,0.5), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ── PHILOSOPHY ────────────────────────────────── */
+        .philosophy {
+            padding: 8rem 2rem;
+            text-align: center;
+            max-width: 840px;
+            margin: 0 auto;
+        }
+
+        .philosophy .overline {
+            font-family: var(--body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dusk);
+            margin-bottom: 2.5rem;
+        }
+
+        .philosophy h2 {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1.25;
+            color: var(--earth);
+            margin-bottom: 2rem;
+        }
+
+        .philosophy p {
+            font-size: 1.05rem;
+            color: var(--shadow);
+            line-height: 2;
+        }
+
+        /* ── COLLECTION ────────────────────────────────── */
+        .collection {
+            padding: 4rem 4rem 8rem;
+        }
+
+        .collection .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .collection .overline {
+            font-family: var(--body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dusk);
+            margin-bottom: 1.5rem;
+        }
+
+        .collection h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--earth);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--deep);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease, opacity 0.4s;
+            opacity: 0.92;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .gallery-item .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(26,21,18,0.8), transparent);
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .caption {
+            transform: translateY(0);
+        }
+
+        .caption h3 {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--cream);
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+        }
+
+        .caption p {
+            font-size: 0.9rem;
+            color: rgba(254,253,251,0.75);
+            letter-spacing: 0.05em;
+            font-weight: 400;
+        }
+
+        /* ── CRAFT (dark section) ──────────────────────── */
+        .craft {
+            background: var(--deep);
+            color: var(--cream);
+            padding: 8rem 4rem;
+        }
+
+        .craft-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .craft .overline {
+            font-family: var(--body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dusk);
+            margin-bottom: 2rem;
+        }
+
+        .craft h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 300;
+            color: var(--cream);
+            margin-bottom: 2rem;
+            line-height: 1.3;
+        }
+
+        .craft p {
+            font-size: 1rem;
+            color: var(--warm-gray);
+            line-height: 2;
+            margin-bottom: 2rem;
+        }
+
+        .craft-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .craft-stat {
+            text-align: center;
+        }
+
+        .craft-stat .number {
+            font-family: var(--heading);
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--stone);
+            display: block;
+        }
+
+        .craft-stat .label {
+            font-size: 0.68rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--dusk);
+            margin-top: 0.5rem;
+        }
+
+        .craft-image {
+            aspect-ratio: 3/4;
+            overflow: hidden;
+        }
+
+        .craft-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9) contrast(1.05);
+        }
+
+        /* ── PROCESS ───────────────────────────────────── */
+        .process {
+            padding: 8rem 4rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .process .overline {
+            font-family: var(--body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dusk);
+            margin-bottom: 1.5rem;
+        }
+
+        .process h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--earth);
+            margin-bottom: 5rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4rem;
+            text-align: left;
+        }
+
+        .step .step-number {
+            font-family: var(--heading);
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--stone);
+            opacity: 0.5;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .step h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            color: var(--earth);
+        }
+
+        .step p {
+            font-size: 0.95rem;
+            color: var(--shadow);
+            line-height: 1.9;
+        }
+
+        /* ── CONSULTATION CTA ──────────────────────────── */
+        .consult {
+            position: relative;
+            padding: 10rem 2rem;
+            text-align: center;
+            background: var(--deep);
+            overflow: hidden;
+        }
+
+        .consult::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(26,21,18,0.7), rgba(26,21,18,0.5)),
+                url('https://images.unsplash.com/photo-1515562141589-67f0d54fcf39?w=1920&q=80') center/cover no-repeat;
+        }
+
+        .consult-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .consult h2 {
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            font-weight: 300;
+            color: var(--cream);
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .consult p {
+            font-family: var(--heading);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: rgba(254,253,251,0.6);
+            margin-bottom: 3rem;
+        }
+
+        .consult .consult-cta {
+            display: inline-block;
+            font-family: var(--body);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--earth);
+            background: var(--cream);
+            padding: 1.1rem 3.5rem;
+            text-decoration: none;
+            transition: all 0.4s;
+        }
+
+        .consult .consult-cta:hover {
+            background: var(--stone);
+            color: var(--cream);
+        }
+
+        /* ── FOOTER ────────────────────────────────────── */
+        footer {
+            background: var(--deep);
+            border-top: 1px solid rgba(139,115,85,0.15);
+            padding: 4rem 4rem 3rem;
+            color: var(--dusk);
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand .logo {
+            font-family: var(--brand);
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: var(--cream);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: var(--shadow);
+            max-width: 280px;
+        }
+
+        footer h4 {
+            font-family: var(--body);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--warm-gray);
+            margin-bottom: 1.2rem;
+        }
+
+        footer ul {
+            list-style: none;
+        }
+
+        footer ul li {
+            margin-bottom: 0.6rem;
+        }
+
+        footer ul a {
+            font-size: 0.8rem;
+            color: var(--shadow);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer ul a:hover { color: var(--cream); }
+
+        .footer-bottom {
+            max-width: 1100px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(139,115,85,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--shadow);
+        }
+
+        /* ── TEAM ──────────────────────────────────────── */
+        .team {
+            padding: 8rem 4rem;
+            background: var(--cream);
+            text-align: center;
+        }
+
+        .team .overline {
+            font-family: var(--body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--dusk);
+            margin-bottom: 1.5rem;
+        }
+
+        .team h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--earth);
+            margin-bottom: 5rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--deep);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-avatar .initials {
+            font-family: var(--heading);
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--stone);
+            letter-spacing: 0.05em;
+        }
+
+        .team-member h3 {
+            font-family: var(--heading);
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--earth);
+            letter-spacing: 0.03em;
+            margin-bottom: 0.4rem;
+        }
+
+        .team-member .role {
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--dusk);
+        }
+
+        /* ── FORM OVERLAY ──────────────────────────────── */
+        .form-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: var(--cream);
+            overflow-y: auto;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-overlay.active { display: flex; flex-direction: column; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .form-header {
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(139,115,85,0.15);
+        }
+
+        .form-close {
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--dusk);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: var(--body);
+            transition: color 0.3s;
+        }
+
+        .form-close:hover { color: var(--stone); }
+
+        .form-header .logo {
+            font-family: var(--brand);
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: var(--earth);
+            text-transform: uppercase;
+        }
+
+        .form-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 24px;
+        }
+
+        .form-inner { width: 100%; max-width: 560px; }
+
+        .progress-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 60px;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 2px;
+            background: rgba(139,115,85,0.15);
+            border-radius: 1px;
+            transition: background 0.4s;
+        }
+
+        .progress-segment.active { background: var(--stone); }
+        .progress-segment.completed { background: rgba(139,115,85,0.45); }
+
+        .form-step {
+            display: none;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .form-step.active { display: block; }
+
+        .form-question {
+            font-family: var(--heading);
+            font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+            font-weight: 400;
+            margin-bottom: 14px;
+            line-height: 1.3;
+        }
+
+        .form-hint {
+            font-size: 0.95rem;
+            color: var(--dusk);
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .option-card {
+            padding: 22px 26px;
+            border: 1px solid rgba(139,115,85,0.15);
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .option-card:hover {
+            border-color: rgba(139,115,85,0.4);
+            background: rgba(139,115,85,0.04);
+        }
+
+        .option-card.selected {
+            border-color: var(--stone);
+            background: rgba(139,115,85,0.08);
+        }
+
+        .option-card-title {
+            font-family: var(--heading);
+            font-size: 1.15rem;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .option-card-sub {
+            font-size: 0.85rem;
+            color: var(--dusk);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            background: #fff;
+            border: 1px solid rgba(139,115,85,0.15);
+            color: var(--earth);
+            font-family: var(--body);
+            font-size: 1rem;
+            font-weight: 300;
+            outline: none;
+            transition: border-color 0.3s;
+            margin-bottom: 16px;
+        }
+
+        .form-input:focus, .form-textarea:focus { border-color: var(--stone); }
+        .form-input::placeholder, .form-textarea::placeholder { color: var(--dusk); }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .ring-size-row {
+            display: none;
+            padding: 20px 24px;
+            background: rgba(139,115,85,0.04);
+            border: 1px solid rgba(139,115,85,0.15);
+            border-radius: 4px;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .ring-size-row.visible { display: block; }
+
+        .ring-size-row label {
+            font-family: var(--heading);
+            font-size: 1.1rem;
+            font-weight: 400;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--earth);
+        }
+
+        .ring-size-select {
+            width: 100%;
+            max-width: 280px;
+            padding: 14px 20px;
+            background: #fff;
+            border: 1px solid rgba(139,115,85,0.15);
+            color: var(--earth);
+            font-family: var(--body);
+            font-size: 1rem;
+            font-weight: 400;
+            outline: none;
+            transition: border-color 0.3s;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238b7355' stroke-width='1.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            cursor: pointer;
+        }
+
+        .ring-size-select:focus { border-color: var(--stone); }
+
+        .form-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 48px;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--dusk);
+            font-family: var(--body);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s;
+            padding: 10px 0;
+        }
+
+        .btn-back:hover { color: var(--earth); }
+
+        .btn-next {
+            padding: 14px 40px;
+            background: transparent;
+            border: 1px solid var(--stone);
+            color: var(--stone);
+            font-family: var(--body);
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-next:hover { background: var(--stone); color: #fff; }
+        .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-next:disabled:hover { background: transparent; color: var(--stone); }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .form-success.active { display: block; }
+
+        .form-success h2 {
+            font-size: 1.8rem;
+            color: var(--stone);
+            margin-bottom: 1rem;
+        }
+
+        .form-success p {
+            font-size: 0.95rem;
+            color: var(--shadow);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .btn-return {
+            display: inline-block;
+            padding: 14px 40px;
+            border: 1px solid var(--stone);
+            color: var(--stone);
+            font-family: var(--body);
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: none;
+        }
+
+        .btn-return:hover { background: var(--stone); color: #fff; }
+
+        /* ── UPLOAD STEP ───────────────────────────────── */
+        .upload-zone {
+            border: 2px dashed rgba(139,115,85,0.3);
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(139,115,85,0.02);
+            position: relative;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--stone);
+            background: rgba(139,115,85,0.05);
+        }
+
+        .upload-zone.has-files {
+            border-style: solid;
+            border-color: var(--stone);
+            padding: 1.5rem;
+        }
+
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            color: var(--dusk);
+        }
+
+        .upload-label {
+            font-size: 0.9rem;
+            color: var(--shadow);
+            margin-bottom: 0.3rem;
+        }
+
+        .upload-hint {
+            font-size: 0.75rem;
+            color: var(--dusk);
+        }
+
+        .upload-previews {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .upload-preview {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-preview .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        /* ── RESPONSIVE ────────────────────────────────── */
+        @media (max-width: 768px) {
+            nav { padding: 1.2rem 2rem; }
+            nav .links { display: none; }
+            .craft-inner { grid-template-columns: 1fr; gap: 3rem; }
+            .gallery { grid-template-columns: 1fr 1fr; }
+            .steps { grid-template-columns: 1fr; gap: 3rem; }
+            .footer-inner { grid-template-columns: 1fr 1fr; }
+            .philosophy { padding: 5rem 1.5rem; }
+            .collection { padding: 3rem 1.5rem 5rem; }
+            .craft { padding: 5rem 2rem; }
+            .process { padding: 5rem 2rem; }
+            .team { padding: 5rem 2rem; }
+            .team-grid { grid-template-columns: 1fr 1fr; }
+            .option-grid { grid-template-columns: 1fr; }
+            .input-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .gallery { grid-template-columns: 1fr; }
+            .footer-inner { grid-template-columns: 1fr; }
+            .craft-stats { flex-direction: column; gap: 1.5rem; }
+            .team-grid { grid-template-columns: 1fr; gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ──────────────────────────────────────── -->
+<nav id="mainNav">
+    <div class="logo">Westlake Goldsmiths</div>
+    <ul class="links">
+        <li><a href="#philosophy">Philosophy</a></li>
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#craft">The Craft</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#" class="cta-btn" onclick="showForm(); return false;">Inquire About a Custom Heirloom</a></li>
+    </ul>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────── -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Westlake<br>Goldsmiths</h1>
+        <p class="tagline">Bespoke fine jewelry, hand-crafted in the hills of Austin, Texas</p>
+        <a href="#" class="hero-cta" onclick="showForm(); return false;">Inquire About a Custom Heirloom</a>
+    </div>
+    <div class="scroll-hint"><span></span></div>
+</section>
+
+<!-- ── PHILOSOPHY ──────────────────────────────────────── -->
+<section class="philosophy" id="philosophy">
+    <p class="overline">Our Philosophy</p>
+    <h2>Every piece begins as a conversation.<br>What matters to you becomes what we build.</h2>
+    <p>We don't carry inventory. We don't follow trends. Each piece is designed from nothing, shaped by hand in our Austin studio, and finished to a standard that makes us proud to put our name on it. This is jewelry made for a person, not a market.</p>
+</section>
+
+<!-- ── COLLECTION ──────────────────────────────────────── -->
+<section class="collection" id="collection">
+    <div class="section-header">
+        <p class="overline">Selected Works</p>
+        <h2>Recent Commissions</h2>
+    </div>
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80" alt="Custom gold ring with emerald setting">
+            <div class="caption">
+                <h3>The Barton Ring</h3>
+                <p>18k gold, Colombian emerald</p>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80" alt="Hand-crafted pendant necklace">
+            <div class="caption">
+                <h3>Meridian Pendant</h3>
+                <p>14k rose gold, sapphire</p>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80" alt="Sculptural gold earrings">
+            <div class="caption">
+                <h3>Westlake Studs</h3>
+                <p>18k gold, hand-textured</p>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80" alt="Engagement ring with diamond">
+            <div class="caption">
+                <h3>The Pennybacker</h3>
+                <p>Platinum, old European cut diamond</p>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80" alt="Wide gold cuff bracelet">
+            <div class="caption">
+                <h3>Hill Country Cuff</h3>
+                <p>22k gold, hammered finish</p>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=600&q=80" alt="Delicate chain bracelet">
+            <div class="caption">
+                <h3>Bee Creek Chain</h3>
+                <p>14k gold, hand-linked</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CRAFT (dark section) ────────────────────────────── -->
+<section class="craft" id="craft">
+    <div class="craft-inner">
+        <div>
+            <p class="overline">The Craft</p>
+            <h2>Built at the bench,<br>not on a screen</h2>
+            <p>Every ring, pendant, and bracelet starts as raw metal and stone. We pour, forge, file, set, and polish by hand in our Austin studio. No 3D printing. No mass casting. The irregularities aren't flaws — they're proof a human made this.</p>
+            <div class="craft-stats">
+                <div class="craft-stat">
+                    <span class="number">200+</span>
+                    <span class="label">Pieces Crafted</span>
+                </div>
+                <div class="craft-stat">
+                    <span class="number">12</span>
+                    <span class="label">Years at the Bench</span>
+                </div>
+                <div class="craft-stat">
+                    <span class="number">1</span>
+                    <span class="label">Goldsmith</span>
+                </div>
+            </div>
+        </div>
+        <div class="craft-image">
+            <img src="https://images.unsplash.com/photo-1504222490345-c075b6008014?w=800&q=80" alt="Goldsmith working at the bench">
+        </div>
+    </div>
+</section>
+
+<!-- ── PROCESS ─────────────────────────────────────────── -->
+<section class="process" id="process">
+    <p class="overline">How It Works</p>
+    <h2>From Idea to Heirloom</h2>
+    <div class="steps">
+        <div class="step">
+            <span class="step-number">01</span>
+            <h3>Conversation</h3>
+            <p>We sit down — in person or over a call — and talk about what you're envisioning. The metal, the stones, the occasion, the person who'll wear it. No commitment, no pressure.</p>
+        </div>
+        <div class="step">
+            <span class="step-number">02</span>
+            <h3>Design & Forge</h3>
+            <p>Sketches and material selection come first. Then the metalwork begins — casting, forging, shaping at the bench. You'll see progress photos along the way.</p>
+        </div>
+        <div class="step">
+            <span class="step-number">03</span>
+            <h3>Delivery</h3>
+            <p>Hand-finished, inspected, and delivered to you. Every piece comes with a certificate of authenticity and a lifetime of care from the person who made it.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ── THE TEAM ────────────────────────────────────────── -->
+<section class="team" id="team">
+    <p class="overline">The Team</p>
+    <h2>The People Behind the Pieces</h2>
+    <div class="team-grid">
+        <div class="team-member">
+            <div class="team-avatar"><span class="initials">ST</span></div>
+            <h3>Sam Tyson</h3>
+            <p class="role">Master Goldsmith & Designer</p>
+        </div>
+        <div class="team-member">
+            <div class="team-avatar"><span class="initials">ZC</span></div>
+            <h3>Zachary Casler</h3>
+            <p class="role">Founder + Lapidary</p>
+        </div>
+        <div class="team-member">
+            <div class="team-avatar"><span class="initials">JC</span></div>
+            <h3>Jamie Casler</h3>
+            <p class="role">Designer</p>
+        </div>
+        <div class="team-member">
+            <div class="team-avatar"><span class="initials">TG</span></div>
+            <h3>Tara Goetz</h3>
+            <p class="role">Brand & Content</p>
+        </div>
+    </div>
+</section>
+
+<!-- ── CONSULTATION CTA ────────────────────────────────── -->
+<section class="consult" id="consult">
+    <div class="consult-content">
+        <h2>Ready to begin?</h2>
+        <p>Every great piece starts with a conversation.</p>
+        <a href="#" class="consult-cta" onclick="showForm(); return false;">Inquire About a Custom Heirloom</a>
+    </div>
+</section>
+
+<!-- ── FORM OVERLAY ────────────────────────────────────── -->
+<div class="form-overlay" id="formOverlay">
+    <div class="form-header">
+        <button class="form-close" onclick="hideForm()">&larr; Back</button>
+        <div class="logo">Westlake Goldsmiths</div>
+        <div style="width:60px;"></div>
+    </div>
+
+    <div class="form-container">
+        <div class="form-inner">
+
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-segment active"></div>
+                <div class="progress-segment"></div>
+                <div class="progress-segment"></div>
+                <div class="progress-segment"></div>
+                <div class="progress-segment"></div>
+                <div class="progress-segment"></div>
+                <div class="progress-segment"></div>
+            </div>
+
+            <script>
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfBXb1W_hW2J5kG7w21RdO9O5uCC3flGl-kGrvxTXIkpHm8PFCZ3LATBKRRQziixadxg/exec';
+            // Cloudinary unsigned upload — replace with your values after signup
+            const CLOUDINARY_CLOUD = 'dgq6wnek2';
+            const CLOUDINARY_PRESET = 'westlake_inspo';       // unsigned upload preset name
+            </script>
+
+            <!-- Step 1: Piece Type -->
+            <div class="form-step active" data-step="1">
+                <h2 class="form-question">What are we creating?</h2>
+                <p class="form-hint">Select the type of piece you have in mind.</p>
+                <div class="option-grid" data-field="piece">
+                    <div class="option-card" data-value="Engagement Ring">
+                        <p class="option-card-title">Engagement Ring</p>
+                        <p class="option-card-sub">A symbol of forever</p>
+                    </div>
+                    <div class="option-card" data-value="Ring">
+                        <p class="option-card-title">Ring</p>
+                        <p class="option-card-sub">Statement, band, or cocktail</p>
+                    </div>
+                    <div class="ring-size-row" id="ringSizeRow" style="grid-column: 1 / -1;">
+                        <label>Ring Size</label>
+                        <select class="ring-size-select" id="ringSizeSelect">
+                            <option value="">Select size...</option>
+                            <option value="4">4</option>
+                            <option value="4.5">4.5</option>
+                            <option value="5">5</option>
+                            <option value="5.5">5.5</option>
+                            <option value="6">6</option>
+                            <option value="6.5">6.5</option>
+                            <option value="7">7</option>
+                            <option value="7.5">7.5</option>
+                            <option value="8">8</option>
+                            <option value="8.5">8.5</option>
+                            <option value="9">9</option>
+                            <option value="9.5">9.5</option>
+                            <option value="10">10</option>
+                            <option value="10.5">10.5</option>
+                            <option value="11">11</option>
+                            <option value="11.5">11.5</option>
+                            <option value="12">12</option>
+                            <option value="unsure">Don't know yet</option>
+                        </select>
+                    </div>
+                    <div class="option-card" data-value="Necklace / Pendant">
+                        <p class="option-card-title">Necklace / Pendant</p>
+                        <p class="option-card-sub">Chains, chokers, or pendants</p>
+                    </div>
+                    <div class="option-card" data-value="Earrings">
+                        <p class="option-card-title">Earrings</p>
+                        <p class="option-card-sub">Studs, drops, or hoops</p>
+                    </div>
+                    <div class="option-card" data-value="Bracelet">
+                        <p class="option-card-title">Bracelet</p>
+                        <p class="option-card-sub">Cuff, bangle, or chain</p>
+                    </div>
+                    <div class="option-card" data-value="Brooch">
+                        <p class="option-card-title">Brooch</p>
+                        <p class="option-card-sub">Pin, clasp, or sculptural</p>
+                    </div>
+                    <div class="option-card" data-value="Headdress / Tiara">
+                        <p class="option-card-title">Headdress / Tiara</p>
+                        <p class="option-card-sub">Crowns, circlets, hair pieces</p>
+                    </div>
+                    <div class="option-card" data-value="Something Else">
+                        <p class="option-card-title">Something Else</p>
+                        <p class="option-card-sub">Tell us your vision</p>
+                    </div>
+                </div>
+                <div class="form-nav">
+                    <div></div>
+                    <button class="btn-next" disabled onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Metal -->
+            <div class="form-step" data-step="2">
+                <h2 class="form-question">Which metal speaks to you?</h2>
+                <p class="form-hint">We encourage crafting in 18K or higher gold purity.</p>
+                <div class="option-grid" data-field="metal">
+                    <div class="option-card" data-value="Yellow Gold">
+                        <p class="option-card-title">Yellow Gold</p>
+                        <p class="option-card-sub">Warm, classic, timeless</p>
+                    </div>
+                    <div class="option-card" data-value="White Gold">
+                        <p class="option-card-title">White Gold</p>
+                        <p class="option-card-sub">Cool, modern, refined</p>
+                    </div>
+                    <div class="option-card" data-value="Rose Gold">
+                        <p class="option-card-title">Rose Gold</p>
+                        <p class="option-card-sub">Romantic, warm, unique</p>
+                    </div>
+                    <div class="option-card" data-value="Platinum">
+                        <p class="option-card-title">Platinum</p>
+                        <p class="option-card-sub">The ultimate precious metal</p>
+                    </div>
+                    <div class="option-card" data-value="Mixed Metals">
+                        <p class="option-card-title">Mixed Metals</p>
+                        <p class="option-card-sub">Two-tone or tri-color</p>
+                    </div>
+                    <div class="option-card" data-value="Not Sure Yet">
+                        <p class="option-card-title">Not Sure Yet</p>
+                        <p class="option-card-sub">We'll guide you</p>
+                    </div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn-back" onclick="prevStep()">&larr; Back</button>
+                    <button class="btn-next" disabled onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Stone (multi-select) -->
+            <div class="form-step" data-step="3">
+                <h2 class="form-question">Do you have stones in mind?</h2>
+                <p class="form-hint">Select all that interest you. We source directly from trusted dealers worldwide.</p>
+                <div class="option-grid" data-field="stone" data-multi="true">
+                    <div class="option-card" data-value="Diamond">
+                        <p class="option-card-title">Diamond</p>
+                        <p class="option-card-sub">Brilliant, timeless</p>
+                    </div>
+                    <div class="option-card" data-value="Emerald">
+                        <p class="option-card-title">Emerald</p>
+                        <p class="option-card-sub">Rich green, deeply storied</p>
+                    </div>
+                    <div class="option-card" data-value="Sapphire">
+                        <p class="option-card-title">Sapphire</p>
+                        <p class="option-card-sub">Blue, pink, or padparadscha</p>
+                    </div>
+                    <div class="option-card" data-value="Ruby">
+                        <p class="option-card-title">Ruby</p>
+                        <p class="option-card-sub">The king of gems</p>
+                    </div>
+                    <div class="option-card" data-value="Spinel">
+                        <p class="option-card-title">Spinel</p>
+                        <p class="option-card-sub">Vivid, durable, underrated</p>
+                    </div>
+                    <div class="option-card" data-value="Garnet">
+                        <p class="option-card-title">Garnet</p>
+                        <p class="option-card-sub">Deep reds to mandarin orange</p>
+                    </div>
+                    <div class="option-card" data-value="Morganite">
+                        <p class="option-card-title">Morganite</p>
+                        <p class="option-card-sub">Soft pink, romantic</p>
+                    </div>
+                    <div class="option-card" data-value="Tourmaline">
+                        <p class="option-card-title">Tourmaline</p>
+                        <p class="option-card-sub">Every color imaginable</p>
+                    </div>
+                    <div class="option-card" data-value="Opal">
+                        <p class="option-card-title">Opal</p>
+                        <p class="option-card-sub">Play of color, one of a kind</p>
+                    </div>
+                    <div class="option-card" data-value="Other / Not Sure">
+                        <p class="option-card-title">Other / Not Sure</p>
+                        <p class="option-card-sub">Alexandrite, tanzanite, aquamarine...</p>
+                    </div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn-back" onclick="prevStep()">&larr; Back</button>
+                    <button class="btn-next" disabled onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Style -->
+            <div class="form-step" data-step="4">
+                <h2 class="form-question">Describe your style.</h2>
+                <p class="form-hint">Any inspiration, references, or feelings you want the piece to evoke.</p>
+                <textarea class="form-textarea" id="styleInput" placeholder="Classic with a modern twist... Art deco inspired... Something no one has ever seen... Tell us anything."></textarea>
+                <div class="form-nav">
+                    <button class="btn-back" onclick="prevStep()">&larr; Back</button>
+                    <button class="btn-next" onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Inspiration Photos -->
+            <div class="form-step" data-step="5">
+                <h2 class="form-question">Have any inspiration photos?</h2>
+                <p class="form-hint">Upload a few images — Pinterest saves, screenshots, photos of pieces you love. Totally optional.</p>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="inspoFiles" multiple accept="image/*">
+                    <div id="uploadPlaceholder">
+                        <div class="upload-icon">+</div>
+                        <p class="upload-label">Tap to upload or drag images here</p>
+                        <p class="upload-hint">JPG, PNG, HEIC — up to 5 images, 10MB each</p>
+                    </div>
+                    <div class="upload-previews" id="uploadPreviews"></div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn-back" onclick="prevStep()">&larr; Back</button>
+                    <button class="btn-next" onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Budget -->
+            <div class="form-step" data-step="6">
+                <h2 class="form-question">What's your investment range?</h2>
+                <p class="form-hint">This helps us tailor stone and material options. No judgment — we work with your vision.</p>
+                <div class="option-grid" data-field="budget">
+                    <div class="option-card" data-value="$2,000 – $5,000">
+                        <p class="option-card-title">$2,000 – $5,000</p>
+                    </div>
+                    <div class="option-card" data-value="$5,000 – $10,000">
+                        <p class="option-card-title">$5,000 – $10,000</p>
+                    </div>
+                    <div class="option-card" data-value="$10,000 – $25,000">
+                        <p class="option-card-title">$10,000 – $25,000</p>
+                    </div>
+                    <div class="option-card" data-value="$25,000 – $50,000">
+                        <p class="option-card-title">$25,000 – $50,000</p>
+                    </div>
+                    <div class="option-card" data-value="$50,000+">
+                        <p class="option-card-title">$50,000+</p>
+                    </div>
+                    <div class="option-card" data-value="Prefer to Discuss">
+                        <p class="option-card-title">Prefer to Discuss</p>
+                        <p class="option-card-sub">We'll talk through it</p>
+                    </div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn-back" onclick="prevStep()">&larr; Back</button>
+                    <button class="btn-next" disabled onclick="nextStep()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 7: Contact -->
+            <div class="form-step" data-step="7">
+                <h2 class="form-question">How do we reach you?</h2>
+                <p class="form-hint">We'll follow up within 24 hours to begin your design experience.</p>
+                <div class="input-row">
+                    <input type="text" class="form-input" id="nameInput" placeholder="Full Name" required>
+                    <input type="tel" class="form-input" id="phoneInput" placeholder="Phone (optional)">
+                </div>
+                <input type="email" class="form-input" id="emailInput" placeholder="Email Address" required>
+                <textarea class="form-textarea" id="notesInput" placeholder="Anything else we should know? A date, a surprise, a story behind the piece..." style="min-height:90px;"></textarea>
+                <div class="form-nav">
+                    <button class="btn-back" onclick="prevStep()">&larr; Back</button>
+                    <button class="btn-next" onclick="submitForm()">Submit Request</button>
+                </div>
+                <p style="text-align:center; margin-top:20px; font-size:.75rem; color:var(--dusk);">Your responses are private and secure.</p>
+            </div>
+
+            <!-- Success -->
+            <div class="form-success" id="formSuccess">
+                <h2>Request Received</h2>
+                <p>Thank you. Our team will review your vision and reach out within 24 hours to begin the conversation.</p>
+                <button class="btn-return" onclick="hideForm()">Return Home</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ── FOOTER ──────────────────────────────────────────── -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <div class="logo">Westlake Goldsmiths</div>
+            <p>Bespoke fine jewelry, hand-crafted in Austin, Texas. Every piece made by one goldsmith, for one person.</p>
+        </div>
+        <div>
+            <h4>Navigate</h4>
+            <ul>
+                <li><a href="#philosophy">Philosophy</a></li>
+                <li><a href="#collection">Collection</a></li>
+                <li><a href="#craft">The Craft</a></li>
+                <li><a href="#process">Process</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Contact</h4>
+            <ul>
+                <li><a href="mailto:zachary@westlakegoldsmiths.com">Email</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Austin, TX</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>&copy; 2026 Westlake Goldsmiths. All rights reserved.</span>
+        <span>Crafted in Austin, Texas</span>
+    </div>
+</footer>
+
+<script>
+    // ── Nav scroll ──
+    const nav = document.getElementById('mainNav');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                nav.classList.toggle('scrolled', window.scrollY > 80);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // ── Form overlay ──
+    function showForm() {
+        document.getElementById('formOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function hideForm() {
+        document.getElementById('formOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+        resetForm();
+    }
+
+    // ── Form logic ──
+    let currentStep = 1;
+    const totalSteps = 7;
+    let formData = { piece: '', ringSize: '', metal: '', stone: '', style: '', budget: '', name: '', email: '', phone: '', notes: '' };
+    let inspoFiles = [];
+
+    // ── Upload handling ──
+    const fileInput = document.getElementById('inspoFiles');
+    const uploadZone = document.getElementById('uploadZone');
+    const previews = document.getElementById('uploadPreviews');
+    const placeholder = document.getElementById('uploadPlaceholder');
+
+    fileInput.addEventListener('change', (e) => {
+        const newFiles = Array.from(e.target.files).slice(0, 5 - inspoFiles.length);
+        newFiles.forEach(file => {
+            if (file.size > 10 * 1024 * 1024) return;
+            inspoFiles.push(file);
+        });
+        renderPreviews();
+    });
+
+    function renderPreviews() {
+        previews.innerHTML = '';
+        if (inspoFiles.length > 0) {
+            uploadZone.classList.add('has-files');
+            placeholder.style.display = 'none';
+            inspoFiles.forEach((file, i) => {
+                const div = document.createElement('div');
+                div.className = 'upload-preview';
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                const btn = document.createElement('button');
+                btn.className = 'remove-btn';
+                btn.textContent = '×';
+                btn.onclick = (e) => { e.stopPropagation(); inspoFiles.splice(i, 1); renderPreviews(); };
+                div.appendChild(img);
+                div.appendChild(btn);
+                previews.appendChild(div);
+            });
+            if (inspoFiles.length < 5) {
+                const addMore = document.createElement('div');
+                addMore.className = 'upload-preview';
+                addMore.style.cssText = 'display:flex;align-items:center;justify-content:center;background:rgba(139,115,85,0.05);border:1px dashed rgba(139,115,85,0.2);border-radius:6px;cursor:pointer;font-size:1.5rem;color:var(--dusk);';
+                addMore.textContent = '+';
+                addMore.onclick = () => fileInput.click();
+                previews.appendChild(addMore);
+            }
+        } else {
+            uploadZone.classList.remove('has-files');
+            placeholder.style.display = '';
+        }
+    }
+
+    document.querySelectorAll('.option-grid').forEach(grid => {
+        const isMulti = grid.dataset.multi === 'true';
+        grid.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (isMulti) {
+                    card.classList.toggle('selected');
+                    const selected = Array.from(grid.querySelectorAll('.option-card.selected'))
+                        .map(c => c.dataset.value);
+                    formData[grid.dataset.field] = selected.join(', ');
+                } else {
+                    grid.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    formData[grid.dataset.field] = card.dataset.value;
+                }
+                const btn = card.closest('.form-step').querySelector('.btn-next');
+                const hasSelection = grid.querySelector('.option-card.selected');
+                if (btn) btn.disabled = !hasSelection;
+
+                // Show ring size selector when ring type is chosen
+                if (grid.dataset.field === 'piece') {
+                    const isRing = card.dataset.value === 'Ring' || card.dataset.value === 'Engagement Ring';
+                    document.getElementById('ringSizeRow').classList.toggle('visible', isRing);
+                    if (!isRing) {
+                        formData.ringSize = '';
+                        document.getElementById('ringSizeSelect').value = '';
+                    }
+                }
+            });
+        });
+    });
+
+    function updateProgress() {
+        document.querySelectorAll('.progress-segment').forEach((seg, i) => {
+            seg.classList.remove('active', 'completed');
+            if (i + 1 === currentStep) seg.classList.add('active');
+            else if (i + 1 < currentStep) seg.classList.add('completed');
+        });
+    }
+
+    function nextStep() {
+        if (currentStep === 1) formData.ringSize = document.getElementById('ringSizeSelect').value || '';
+        if (currentStep === 4) formData.style = document.getElementById('styleInput').value;
+        if (currentStep < totalSteps) {
+            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+            currentStep++;
+            const next = document.querySelector('[data-step="' + currentStep + '"]');
+            void next.offsetWidth;
+            next.classList.add('active');
+            updateProgress();
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+            currentStep--;
+            document.querySelector('[data-step="' + currentStep + '"]').classList.add('active');
+            updateProgress();
+        }
+    }
+
+    async function uploadToCloudinary(file) {
+        const fd = new FormData();
+        fd.append('file', file);
+        fd.append('upload_preset', CLOUDINARY_PRESET);
+        fd.append('folder', 'westlake-inspo');
+        const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD + '/image/upload', {
+            method: 'POST',
+            body: fd
+        });
+        const data = await res.json();
+        return data.secure_url;
+    }
+
+    async function submitForm() {
+        formData.name = document.getElementById('nameInput').value.trim();
+        formData.email = document.getElementById('emailInput').value.trim();
+        formData.phone = document.getElementById('phoneInput').value.trim();
+        formData.notes = document.getElementById('notesInput').value.trim();
+
+        if (!formData.name || !formData.email) return;
+        if (!formData.email.includes('@')) return;
+
+        // Show success immediately — uploads happen in background
+        document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+        document.getElementById('formSuccess').classList.add('active');
+        document.querySelector('.progress-bar').style.display = 'none';
+
+        // Upload inspo images to Cloudinary (if any)
+        let imageUrls = [];
+        if (inspoFiles.length > 0 && CLOUDINARY_CLOUD !== 'YOUR_CLOUD_NAME') {
+            try {
+                const uploads = inspoFiles.map(f => uploadToCloudinary(f));
+                imageUrls = await Promise.all(uploads);
+            } catch (e) {
+                console.log('Cloudinary upload failed:', e);
+            }
+        }
+
+        // Send form data + image URLs to Apps Script (→ Sheets + Trello + email)
+        const payload = { ...formData, inspo_images: imageUrls };
+        fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(() => {
+            console.log('Form submission (backup):', JSON.stringify(payload));
+        });
+    }
+
+    function resetForm() {
+        currentStep = 1;
+        formData = { piece: '', ringSize: '', metal: '', stone: '', style: '', budget: '', name: '', email: '', phone: '', notes: '' };
+        document.getElementById('ringSizeRow').classList.remove('visible');
+        document.getElementById('ringSizeSelect').value = '';
+        inspoFiles = [];
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        document.querySelector('[data-step="1"]').classList.add('active');
+        document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.form-input, .form-textarea').forEach(i => { i.value = ''; });
+        document.getElementById('formSuccess').classList.remove('active');
+        document.querySelector('.progress-bar').style.display = '';
+        renderPreviews();
+        updateProgress();
+    }
+</script>
+
+</body>
+</html>
