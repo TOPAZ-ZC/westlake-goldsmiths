@@ -1054,6 +1054,13 @@
             color: var(--dusk);
         }
 
+        .upload-error {
+            margin-top: 10px;
+            min-height: 1.1em;
+            font-size: 0.78rem;
+            color: #9f3a2f;
+        }
+
         .upload-previews {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -1336,7 +1343,7 @@
                     </div>
                     <div class="ring-size-row" id="ringSizeRow" style="grid-column: 1 / -1;">
                         <label>Ring Size</label>
-                        <select class="ring-size-select" id="ringSizeSelect">
+                        <select class="ring-size-select" id="ringSizeSelect" aria-label="Ring size">
                             <option value="">Select size...</option>
                             <option value="4">4</option>
                             <option value="4.5">4.5</option>
@@ -1400,7 +1407,7 @@
                     </div>
                     <div class="ring-size-row" id="karatRow" style="grid-column: 1 / -1;">
                         <label>Gold Purity</label>
-                        <select class="ring-size-select" id="karatSelect">
+                        <select class="ring-size-select" id="karatSelect" aria-label="Yellow gold purity">
                             <option value="">Select purity...</option>
                             <option value="14K">14K</option>
                             <option value="18K">18K</option>
@@ -1418,7 +1425,7 @@
                     </div>
                     <div class="ring-size-row" id="karatRowWR" style="grid-column: 1 / -1;">
                         <label>Gold Purity</label>
-                        <select class="ring-size-select" id="karatSelectWR">
+                        <select class="ring-size-select" id="karatSelectWR" aria-label="White or rose gold purity">
                             <option value="">Select purity...</option>
                             <option value="14K">14K</option>
                             <option value="18K">18K</option>
@@ -1499,7 +1506,7 @@
             <div class="form-step" data-step="4">
                 <h2 class="form-question">Describe your style.</h2>
                 <p class="form-hint">Any inspiration, references, or feelings you want the piece to evoke.</p>
-                <textarea class="form-textarea" id="styleInput" placeholder="Classic with a modern twist... Art deco inspired... Something no one has ever seen... Tell us anything."></textarea>
+                <textarea class="form-textarea" id="styleInput" aria-label="Style description" placeholder="Classic with a modern twist... Art deco inspired... Something no one has ever seen... Tell us anything."></textarea>
                 <div class="form-nav">
                     <button class="btn-back" onclick="prevStep()">&larr; Back</button>
                     <button class="btn-next" onclick="nextStep()">Continue</button>
@@ -1511,13 +1518,14 @@
                 <h2 class="form-question">Have any inspiration photos?</h2>
                 <p class="form-hint">Upload a few images — Pinterest saves, screenshots, photos of pieces you love. Totally optional.</p>
                 <div class="upload-zone" id="uploadZone">
-                    <input type="file" id="inspoFiles" multiple accept="image/*">
+                    <input type="file" id="inspoFiles" multiple accept="image/*" aria-label="Upload inspiration images">
                     <div id="uploadPlaceholder">
                         <div class="upload-icon">+</div>
                         <p class="upload-label">Tap to upload or drag images here</p>
                         <p class="upload-hint">JPG, PNG, HEIC — up to 5 images, 10MB each</p>
                     </div>
                     <div class="upload-previews" id="uploadPreviews"></div>
+                    <p class="upload-error" id="uploadError" aria-live="polite"></p>
                 </div>
                 <div class="form-nav">
                     <button class="btn-back" onclick="prevStep()">&larr; Back</button>
@@ -1561,11 +1569,11 @@
                 <h2 class="form-question">How do we reach you?</h2>
                 <p class="form-hint">We'll follow up within 24 hours to begin your design experience.</p>
                 <div class="input-row">
-                    <input type="text" class="form-input" id="nameInput" placeholder="Full Name" required>
-                    <input type="tel" class="form-input" id="phoneInput" placeholder="Phone (optional)">
+                    <input type="text" class="form-input" id="nameInput" aria-label="Full name" placeholder="Full Name" required>
+                    <input type="tel" class="form-input" id="phoneInput" aria-label="Phone number" placeholder="Phone (optional)">
                 </div>
-                <input type="email" class="form-input" id="emailInput" placeholder="Email Address" required>
-                <textarea class="form-textarea" id="notesInput" placeholder="Anything else we should know? A date, a surprise, a story behind the piece..." style="min-height:90px;"></textarea>
+                <input type="email" class="form-input" id="emailInput" aria-label="Email address" placeholder="Email Address" required>
+                <textarea class="form-textarea" id="notesInput" aria-label="Additional notes" placeholder="Anything else we should know? A date, a surprise, a story behind the piece..." style="min-height:90px;"></textarea>
                 <div class="form-nav">
                     <button class="btn-back" onclick="prevStep()">&larr; Back</button>
                     <button class="btn-next" onclick="submitForm()">Submit Request</button>
@@ -1651,6 +1659,11 @@
     // ── Form logic ──
     let currentStep = 1;
     const totalSteps = 7;
+    const REQUIRED_SELECTION_STEPS = [1, 2, 6];
+    const MAX_INSP_FILES = 5;
+    const MAX_INSP_FILE_BYTES = 10 * 1024 * 1024;
+    const ALLOWED_UPLOAD_TYPES = /^(image\/(jpeg|png|heic|heif|webp))$/i;
+    const ALLOWED_UPLOAD_EXTENSIONS = /\.(jpe?g|png|heic|heif|webp)$/i;
     let formData = { piece: '', ringSize: '', metal: '', karat: '', stone: '', style: '', budget: '', name: '', email: '', phone: '', notes: '' };
     let inspoFiles = [];
 
@@ -1659,14 +1672,88 @@
     const uploadZone = document.getElementById('uploadZone');
     const previews = document.getElementById('uploadPreviews');
     const placeholder = document.getElementById('uploadPlaceholder');
+    const uploadError = document.getElementById('uploadError');
 
-    fileInput.addEventListener('change', (e) => {
-        const newFiles = Array.from(e.target.files).slice(0, 5 - inspoFiles.length);
-        newFiles.forEach(file => {
-            if (file.size > 10 * 1024 * 1024) return;
+    function stepRequiresSelection(stepNumber) {
+        return REQUIRED_SELECTION_STEPS.indexOf(stepNumber) !== -1;
+    }
+
+    function setUploadError(message) {
+        if (uploadError) uploadError.textContent = message || '';
+    }
+
+    function isAllowedImageFile(file) {
+        return ALLOWED_UPLOAD_TYPES.test(file.type || '') || ALLOWED_UPLOAD_EXTENSIONS.test(file.name || '');
+    }
+
+    function isDuplicateFile(file) {
+        return inspoFiles.some(existing =>
+            existing.name === file.name &&
+            existing.size === file.size &&
+            existing.lastModified === file.lastModified
+        );
+    }
+
+    function handleSelectedFiles(files) {
+        const incoming = Array.from(files || []);
+        const slotsLeft = MAX_INSP_FILES - inspoFiles.length;
+        if (slotsLeft <= 0) {
+            setUploadError('You can upload up to 5 inspiration images.');
+            if (fileInput) fileInput.value = '';
+            return;
+        }
+
+        let rejected = '';
+        incoming.slice(0, slotsLeft).forEach(file => {
+            if (isDuplicateFile(file)) return;
+            if (!isAllowedImageFile(file)) {
+                rejected = 'Only JPG, PNG, HEIC, HEIF, and WebP images are supported.';
+                return;
+            }
+            if (file.size > MAX_INSP_FILE_BYTES) {
+                rejected = 'Each image must be 10MB or smaller.';
+                return;
+            }
             inspoFiles.push(file);
         });
+
+        if (incoming.length > slotsLeft && !rejected) {
+            rejected = 'Only the first 5 inspiration images were kept.';
+        }
+
+        setUploadError(rejected);
         renderPreviews();
+        if (fileInput) fileInput.value = '';
+    }
+
+    function updateStepButtons(stepEl) {
+        if (!stepEl) return;
+        const stepNumber = Number(stepEl.dataset.step);
+        const canProceed = !stepRequiresSelection(stepNumber) || !!stepEl.querySelector('.option-card.selected');
+        stepEl.querySelectorAll('.btn-next').forEach(btn => {
+            btn.disabled = !canProceed;
+        });
+    }
+
+    fileInput.addEventListener('change', (e) => {
+        handleSelectedFiles(e.target.files);
+    });
+
+    uploadZone.addEventListener('click', (e) => {
+        if (e.target !== fileInput) fileInput.click();
+    });
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('has-files');
+    });
+    uploadZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        if (!inspoFiles.length) uploadZone.classList.remove('has-files');
+    });
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!inspoFiles.length) uploadZone.classList.remove('has-files');
+        handleSelectedFiles(e.dataTransfer.files);
     });
 
     function renderPreviews() {
@@ -1678,9 +1765,12 @@
                 const div = document.createElement('div');
                 div.className = 'upload-preview';
                 const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
+                const objectUrl = URL.createObjectURL(file);
+                img.src = objectUrl;
+                img.onload = () => URL.revokeObjectURL(objectUrl);
                 const btn = document.createElement('button');
                 btn.className = 'remove-btn';
+                btn.type = 'button';
                 btn.textContent = '×';
                 btn.onclick = (e) => { e.stopPropagation(); inspoFiles.splice(i, 1); renderPreviews(); };
                 div.appendChild(img);
@@ -1698,15 +1788,33 @@
         } else {
             uploadZone.classList.remove('has-files');
             placeholder.style.display = '';
+            setUploadError('');
         }
     }
 
     document.querySelectorAll('.option-grid').forEach(grid => {
         const isMulti = grid.dataset.multi === 'true';
+        grid.setAttribute('role', isMulti ? 'group' : 'radiogroup');
         grid.querySelectorAll('.option-card').forEach(card => {
+            card.setAttribute('role', isMulti ? 'checkbox' : 'radio');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-checked', 'false');
+            const title = card.querySelector('.option-card-title');
+            const sub = card.querySelector('.option-card-sub');
+            const label = [title && title.textContent, sub && sub.textContent].filter(Boolean).join('. ');
+            if (label) card.setAttribute('aria-label', label);
+
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.click();
+                }
+            });
+
             card.addEventListener('click', () => {
                 if (isMulti) {
                     card.classList.toggle('selected');
+                    card.setAttribute('aria-checked', card.classList.contains('selected') ? 'true' : 'false');
                     const selected = Array.from(grid.querySelectorAll('.option-card.selected'))
                         .map(c => c.dataset.value);
                     formData[grid.dataset.field] = selected.join(', ');
@@ -1715,15 +1823,14 @@
                     const allCards = grid.querySelectorAll('.option-card');
                     for (let i = 0; i < allCards.length; i++) {
                         allCards[i].classList.remove('selected');
+                        allCards[i].setAttribute('aria-checked', 'false');
                     }
                     card.classList.add('selected');
+                    card.setAttribute('aria-checked', 'true');
                     formData[grid.dataset.field] = card.dataset.value;
                 }
-                const hasSelection = grid.querySelector('.option-card.selected');
                 const step = card.closest('.form-step');
-                step.querySelectorAll('.btn-next').forEach(btn => {
-                    btn.disabled = !hasSelection;
-                });
+                updateStepButtons(step);
                 updateTopButton();
 
                 // Show karat selector when gold is chosen
@@ -1771,9 +1878,7 @@
     function updateTopButton() {
         const btn = document.getElementById('btnNextTop');
         if (!btn) return;
-        // Steps with required selection: 1 (piece), 2 (metal), 3 (stones), 6 (budget)
-        const requiresSelection = [1, 2, 3, 6];
-        if (requiresSelection.includes(currentStep)) {
+        if (stepRequiresSelection(currentStep)) {
             const activeStep = document.querySelector('[data-step="' + currentStep + '"]');
             const hasSelection = activeStep && activeStep.querySelector('.option-card.selected');
             btn.disabled = !hasSelection;
@@ -1794,6 +1899,7 @@
             void next.offsetWidth;
             next.classList.add('active');
             updateProgress();
+            updateStepButtons(next);
             updateTopButton();
         }
     }
@@ -1802,8 +1908,10 @@
         if (currentStep > 1) {
             document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
             currentStep--;
-            document.querySelector('[data-step="' + currentStep + '"]').classList.add('active');
+            const step = document.querySelector('[data-step="' + currentStep + '"]');
+            step.classList.add('active');
             updateProgress();
+            updateStepButtons(step);
             updateTopButton();
         }
     }
@@ -1817,7 +1925,11 @@
             method: 'POST',
             body: fd
         });
+        if (!res.ok) throw new Error('Upload failed');
         const data = await res.json();
+        if (!data || typeof data.secure_url !== 'string' || !/^https:\/\/res\.cloudinary\.com\//.test(data.secure_url)) {
+            throw new Error('Invalid upload response');
+        }
         return data.secure_url;
     }
 
@@ -1839,8 +1951,8 @@
         let imageUrls = [];
         if (inspoFiles.length > 0 && CLOUDINARY_CLOUD !== 'YOUR_CLOUD_NAME') {
             try {
-                const uploads = inspoFiles.map(f => uploadToCloudinary(f));
-                imageUrls = await Promise.all(uploads);
+                const uploads = inspoFiles.map(f => uploadToCloudinary(f).catch(() => null));
+                imageUrls = (await Promise.all(uploads)).filter(Boolean);
             } catch (e) {
                 console.log('Cloudinary upload failed:', e);
             }
@@ -1870,13 +1982,21 @@
         inspoFiles = [];
         document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
         document.querySelector('[data-step="1"]').classList.add('active');
-        document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.option-card').forEach(c => {
+            c.classList.remove('selected');
+            c.setAttribute('aria-checked', 'false');
+        });
         document.querySelectorAll('.form-input, .form-textarea').forEach(i => { i.value = ''; });
         document.getElementById('formSuccess').classList.remove('active');
         document.querySelector('.progress-bar').style.display = '';
         renderPreviews();
         updateProgress();
+        updateStepButtons(document.querySelector('[data-step="1"]'));
+        updateTopButton();
     }
+
+    updateStepButtons(document.querySelector('[data-step="1"]'));
+    updateTopButton();
 </script>
 
 </body>
