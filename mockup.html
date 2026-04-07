@@ -1353,6 +1353,16 @@
                         <p class="option-card-title">Yellow Gold</p>
                         <p class="option-card-sub">Warm, classic, timeless</p>
                     </div>
+                    <div class="ring-size-row" id="karatRow" style="grid-column: 1 / -1;">
+                        <label>Gold Purity</label>
+                        <select class="ring-size-select" id="karatSelect">
+                            <option value="">Select purity...</option>
+                            <option value="14K">14K</option>
+                            <option value="18K">18K</option>
+                            <option value="22K">22K</option>
+                            <option value="24K">24K</option>
+                        </select>
+                    </div>
                     <div class="option-card" data-value="White Gold">
                         <p class="option-card-title">White Gold</p>
                         <p class="option-card-sub">Cool, modern, refined</p>
@@ -1588,7 +1598,7 @@
     // ── Form logic ──
     let currentStep = 1;
     const totalSteps = 7;
-    let formData = { piece: '', ringSize: '', metal: '', stone: '', style: '', budget: '', name: '', email: '', phone: '', notes: '' };
+    let formData = { piece: '', ringSize: '', metal: '', karat: '', stone: '', style: '', budget: '', name: '', email: '', phone: '', notes: '' };
     let inspoFiles = [];
 
     // ── Upload handling ──
@@ -1660,6 +1670,16 @@
                 const hasSelection = grid.querySelector('.option-card.selected');
                 if (btn) btn.disabled = !hasSelection;
 
+                // Show karat selector when Yellow Gold is chosen
+                if (grid.dataset.field === 'metal') {
+                    const isYellow = card.dataset.value === 'Yellow Gold';
+                    document.getElementById('karatRow').classList.toggle('visible', isYellow);
+                    if (!isYellow) {
+                        formData.karat = '';
+                        document.getElementById('karatSelect').value = '';
+                    }
+                }
+
                 // Show ring size selector when ring type is chosen
                 if (grid.dataset.field === 'piece') {
                     const isRing = card.dataset.value === 'Ring' || card.dataset.value === 'Engagement Ring';
@@ -1683,6 +1703,7 @@
 
     function nextStep() {
         if (currentStep === 1) formData.ringSize = document.getElementById('ringSizeSelect').value || '';
+        if (currentStep === 2) formData.karat = document.getElementById('karatSelect').value || '';
         if (currentStep === 4) formData.style = document.getElementById('styleInput').value;
         if (currentStep < totalSteps) {
             document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
@@ -1755,9 +1776,11 @@
 
     function resetForm() {
         currentStep = 1;
-        formData = { piece: '', ringSize: '', metal: '', stone: '', style: '', budget: '', name: '', email: '', phone: '', notes: '' };
+        formData = { piece: '', ringSize: '', metal: '', karat: '', stone: '', style: '', budget: '', name: '', email: '', phone: '', notes: '' };
         document.getElementById('ringSizeRow').classList.remove('visible');
         document.getElementById('ringSizeSelect').value = '';
+        document.getElementById('karatRow').classList.remove('visible');
+        document.getElementById('karatSelect').value = '';
         inspoFiles = [];
         document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
         document.querySelector('[data-step="1"]').classList.add('active');
