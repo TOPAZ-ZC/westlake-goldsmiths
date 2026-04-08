@@ -81,6 +81,8 @@
             letter-spacing: 0.05em;
             color: var(--cream);
             text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         nav .links {
@@ -564,6 +566,9 @@
             color: var(--cream);
             text-transform: uppercase;
             margin-bottom: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            display: block;
         }
 
         .footer-brand p {
@@ -728,6 +733,8 @@
             letter-spacing: 0.05em;
             color: var(--earth);
             text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .form-container {
@@ -1130,7 +1137,7 @@
 
 <!-- ── NAVIGATION ──────────────────────────────────────── -->
 <nav id="mainNav">
-    <div class="logo">Westlake Goldsmiths</div>
+    <a href="#" class="logo" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">Westlake Goldsmiths</a>
     <ul class="links">
         <li><a href="#philosophy">Philosophy</a></li>
         <li><a href="#collection">Collection</a></li>
@@ -1301,7 +1308,7 @@
 <div class="form-overlay" id="formOverlay">
     <div class="form-header">
         <button class="form-close" onclick="hideForm()">&larr; Back</button>
-        <div class="logo">Westlake Goldsmiths</div>
+        <a href="#" class="logo" onclick="event.preventDefault(); hideForm();">Westlake Goldsmiths</a>
         <div style="width:60px;"></div>
     </div>
 
@@ -1596,7 +1603,7 @@
 <footer>
     <div class="footer-inner">
         <div class="footer-brand">
-            <div class="logo">Westlake Goldsmiths</div>
+            <a href="#" class="logo" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">Westlake Goldsmiths</a>
             <p>Bespoke fine jewelry, hand-crafted in Austin, Texas. Every piece made by one goldsmith, for one person.</p>
         </div>
         <div>
@@ -1946,6 +1953,7 @@
         document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
         document.getElementById('formSuccess').classList.add('active');
         document.querySelector('.progress-row').style.display = 'none';
+        document.getElementById('btnNextTop').style.display = 'none';
 
         // Upload inspo images to Cloudinary (if any)
         let imageUrls = [];
@@ -1989,6 +1997,7 @@
         document.querySelectorAll('.form-input, .form-textarea').forEach(i => { i.value = ''; });
         document.getElementById('formSuccess').classList.remove('active');
         document.querySelector('.progress-row').style.display = '';
+        document.getElementById('btnNextTop').style.display = '';
         renderPreviews();
         updateProgress();
         updateStepButtons(document.querySelector('[data-step="1"]'));
