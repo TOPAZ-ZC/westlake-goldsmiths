@@ -1583,6 +1583,7 @@
                 </div>
                 <input type="email" class="form-input" id="emailInput" aria-label="Email address" placeholder="Email Address" required>
                 <textarea class="form-textarea" id="notesInput" aria-label="Additional notes" placeholder="Anything else we should know? A date, a surprise, a story behind the piece..." style="min-height:90px;"></textarea>
+                <p class="upload-error" id="submitError" aria-live="polite" style="margin-bottom:8px;"></p>
                 <div class="form-nav">
                     <button class="btn-back" onclick="prevStep()">&larr; Back</button>
                     <button class="btn-next" onclick="submitForm()">Submit Request</button>
@@ -1655,22 +1656,58 @@
 
     // ── Form overlay ──
     let _submitting = false;
+    let _lastFocusedElement = null;
 
     function showForm() {
-        document.getElementById('formOverlay').classList.add('active');
+        _lastFocusedElement = document.activeElement;
+        const overlay = document.getElementById('formOverlay');
+        overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+        // Make background inert
+        document.querySelectorAll('body > :not(.form-overlay)').forEach(el => {
+            if (el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE' && el.tagName !== 'LINK') {
+                el.setAttribute('inert', '');
+                el.setAttribute('aria-hidden', 'true');
+            }
+        });
+        // Focus first interactive element
+        const firstFocusable = overlay.querySelector('button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable) firstFocusable.focus();
     }
 
     function hideForm() {
-        if (_submitting) return; // Block close during submission
-        document.getElementById('formOverlay').classList.remove('active');
+        if (_submitting) return;
+        const overlay = document.getElementById('formOverlay');
+        overlay.classList.remove('active');
         document.body.style.overflow = '';
+        // Restore background
+        document.querySelectorAll('[inert]').forEach(el => {
+            el.removeAttribute('inert');
+            el.removeAttribute('aria-hidden');
+        });
         resetForm();
+        // Restore focus
+        if (_lastFocusedElement && _lastFocusedElement.focus) _lastFocusedElement.focus();
     }
 
+    // Escape key + focus trap
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('formOverlay').classList.contains('active')) {
-            hideForm();
+        const overlay = document.getElementById('formOverlay');
+        if (!overlay.classList.contains('active')) return;
+        if (e.key === 'Escape') { hideForm(); return; }
+        // Trap focus within overlay
+        if (e.key === 'Tab') {
+            const focusable = overlay.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
         }
     });
 
@@ -1721,8 +1758,10 @@
             return;
         }
 
+        // Filter first, THEN slice to available slots — so valid files aren't dropped
         let rejected = '';
-        incoming.slice(0, slotsLeft).forEach(file => {
+        const valid = [];
+        incoming.forEach(file => {
             if (isDuplicateFile(file)) return;
             if (!isAllowedImageFile(file)) {
                 rejected = 'Only JPG, PNG, HEIC, HEIF, and WebP images are supported.';
@@ -1732,10 +1771,13 @@
                 rejected = 'Each image must be 10MB or smaller.';
                 return;
             }
-            inspoFiles.push(file);
+            valid.push(file);
         });
 
-        if (incoming.length > slotsLeft && !rejected) {
+        const accepted = valid.slice(0, slotsLeft);
+        accepted.forEach(file => inspoFiles.push(file));
+
+        if (valid.length > slotsLeft && !rejected) {
             rejected = 'Only the first 5 inspiration images were kept.';
         }
 
@@ -1752,6 +1794,11 @@
             btn.disabled = !canProceed;
         });
     }
+
+    // Keep karat synced on change — prevents stale value after back-navigation
+    document.getElementById('karatSelect').addEventListener('change', (e) => { formData.karat = e.target.value; });
+    document.getElementById('karatSelectWR').addEventListener('change', (e) => { formData.karat = e.target.value; });
+    document.getElementById('ringSizeSelect').addEventListener('change', (e) => { formData.ringSize = e.target.value; });
 
     fileInput.addEventListener('change', (e) => {
         handleSelectedFiles(e.target.files);
@@ -2026,26 +2073,39 @@
         formData.phone = document.getElementById('phoneInput').value.trim();
         formData.notes = document.getElementById('notesInput').value.trim();
 
-        // Validation with user feedback
+        // Validation with inline feedback — no alert() dialogs
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const nameInput = document.getElementById('nameInput');
         const emailInput = document.getElementById('emailInput');
+        const submitError = document.getElementById('submitError');
         nameInput.style.borderColor = '';
         emailInput.style.borderColor = '';
+        if (submitError) submitError.textContent = '';
 
         // Revalidate required selections from earlier steps
-        if (!formData.piece) { alert('Please select a piece type (step 1).'); return; }
-        if (!formData.metal) { alert('Please select a metal (step 2).'); return; }
+        if (!formData.piece) {
+            if (submitError) submitError.textContent = 'Please go back and select a piece type.';
+            return;
+        }
+        if (!formData.metal) {
+            if (submitError) submitError.textContent = 'Please go back and select a metal.';
+            return;
+        }
+        if (!formData.budget) {
+            if (submitError) submitError.textContent = 'Please go back and select a budget range.';
+            return;
+        }
 
         if (!formData.name) {
             nameInput.style.borderColor = '#9f3a2f';
             nameInput.focus();
+            if (submitError) submitError.textContent = 'Your name is required.';
             return;
         }
         if (!emailRegex.test(formData.email)) {
             emailInput.style.borderColor = '#9f3a2f';
             emailInput.focus();
-            if (!formData.email) emailInput.placeholder = 'Email is required';
+            if (submitError) submitError.textContent = formData.email ? 'Please enter a valid email address.' : 'Your email is required.';
             return;
         }
 
