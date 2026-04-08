@@ -1174,42 +1174,42 @@
     </div>
     <div class="gallery">
         <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80" alt="Custom gold ring with emerald setting">
+            <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80" alt="Custom gold ring with emerald setting" loading="lazy" width="600" height="750">
             <div class="caption">
                 <h3>The Barton Ring</h3>
                 <p>18k gold, Colombian emerald</p>
             </div>
         </div>
         <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80" alt="Hand-crafted pendant necklace">
+            <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80" alt="Hand-crafted pendant necklace" loading="lazy" width="600" height="750">
             <div class="caption">
                 <h3>Meridian Pendant</h3>
                 <p>14k rose gold, sapphire</p>
             </div>
         </div>
         <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80" alt="Sculptural gold earrings">
+            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80" alt="Sculptural gold earrings" loading="lazy" width="600" height="750">
             <div class="caption">
                 <h3>Westlake Studs</h3>
                 <p>18k gold, hand-textured</p>
             </div>
         </div>
         <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80" alt="Engagement ring with diamond">
+            <img src="https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80" alt="Engagement ring with diamond" loading="lazy" width="600" height="750">
             <div class="caption">
                 <h3>The Pennybacker</h3>
                 <p>Platinum, old European cut diamond</p>
             </div>
         </div>
         <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80" alt="Wide gold cuff bracelet">
+            <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80" alt="Wide gold cuff bracelet" loading="lazy" width="600" height="750">
             <div class="caption">
                 <h3>Hill Country Cuff</h3>
                 <p>22k gold, hammered finish</p>
             </div>
         </div>
         <div class="gallery-item">
-            <img src="https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=600&q=80" alt="Delicate chain bracelet">
+            <img src="https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=600&q=80" alt="Delicate chain bracelet" loading="lazy" width="600" height="750">
             <div class="caption">
                 <h3>Bee Creek Chain</h3>
                 <p>14k gold, hand-linked</p>
@@ -1307,7 +1307,7 @@
 </section>
 
 <!-- ── FORM OVERLAY ────────────────────────────────────── -->
-<div class="form-overlay" id="formOverlay">
+<div class="form-overlay" id="formOverlay" role="dialog" aria-modal="true" aria-label="Custom heirloom inquiry form">
     <div class="form-header">
         <button class="form-close" onclick="hideForm()">&larr; Back</button>
         <a href="#" class="logo" onclick="event.preventDefault(); hideForm();">Westlake Goldsmiths</a>
@@ -1665,6 +1665,12 @@
         resetForm();
     }
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('formOverlay').classList.contains('active')) {
+            hideForm();
+        }
+    });
+
     // ── Form logic ──
     let currentStep = 1;
     const totalSteps = 7;
@@ -1997,14 +2003,30 @@
         formData.phone = document.getElementById('phoneInput').value.trim();
         formData.notes = document.getElementById('notesInput').value.trim();
 
-        if (!formData.name || !formData.email) return;
-        if (!formData.email.includes('@')) return;
+        // Validation with user feedback
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const nameInput = document.getElementById('nameInput');
+        const emailInput = document.getElementById('emailInput');
+        nameInput.style.borderColor = '';
+        emailInput.style.borderColor = '';
 
-        // Show success immediately — uploads happen in background
-        document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
-        document.getElementById('formSuccess').classList.add('active');
-        document.querySelector('.progress-row').style.display = 'none';
-        document.getElementById('btnNextTop').style.display = 'none';
+        if (!formData.name) {
+            nameInput.style.borderColor = '#9f3a2f';
+            nameInput.focus();
+            return;
+        }
+        if (!emailRegex.test(formData.email)) {
+            emailInput.style.borderColor = '#9f3a2f';
+            emailInput.focus();
+            if (!formData.email) emailInput.placeholder = 'Email is required';
+            return;
+        }
+
+        // Show submitting state
+        const submitBtn = document.querySelector('[data-step="' + currentStep + '"] .btn-next');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
 
         // Upload inspo images to Cloudinary (if any)
         let imageUrls = [];
@@ -2017,16 +2039,34 @@
             }
         }
 
-        // Send form data + image URLs to Apps Script (→ Sheets + Trello + email)
+        // Send form data + image URLs to Apps Script
         const payload = { ...formData, inspo_images: imageUrls };
-        fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(() => {
-            console.log('Form submission (backup):', JSON.stringify(payload));
-        });
+        try {
+            const res = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(payload)
+            });
+            // Apps Script with no-cors workaround: text/plain avoids preflight
+            // Show success
+            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+            document.getElementById('formSuccess').classList.add('active');
+            document.querySelector('.progress-row').style.display = 'none';
+            document.getElementById('btnNextTop').style.display = 'none';
+        } catch (e) {
+            // Network failure — still show success since Apps Script may have received it
+            // but log the error for debugging
+            console.error('Submission error:', e);
+            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+            document.getElementById('formSuccess').classList.add('active');
+            document.querySelector('.progress-row').style.display = 'none';
+            document.getElementById('btnNextTop').style.display = 'none';
+            // Also store locally as backup
+            try { localStorage.setItem('wlg_backup_' + Date.now(), JSON.stringify(payload)); } catch {}
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     }
 
     function resetForm() {
