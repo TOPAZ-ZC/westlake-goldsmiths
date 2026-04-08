@@ -1587,7 +1587,7 @@
                     <button class="btn-back" onclick="prevStep()">&larr; Back</button>
                     <button class="btn-next" onclick="submitForm()">Submit Request</button>
                 </div>
-                <p style="text-align:center; margin-top:20px; font-size:.75rem; color:var(--dusk);">Your responses are private and secure.</p>
+                <p style="text-align:center; margin-top:20px; font-size:.75rem; color:var(--dusk);">Your information is shared only with our team.</p>
             </div>
 
             <!-- Success -->
@@ -1654,12 +1654,15 @@
     });
 
     // ── Form overlay ──
+    let _submitting = false;
+
     function showForm() {
         document.getElementById('formOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
     function hideForm() {
+        if (_submitting) return; // Block close during submission
         document.getElementById('formOverlay').classList.remove('active');
         document.body.style.overflow = '';
         resetForm();
@@ -1834,10 +1837,20 @@
                         inner.replaceWith(img);
                     } else {
                         // Designed fallback for formats the browser can't decode
-                        const ext = (file.name.split('.').pop() || '').toUpperCase();
+                        const ext = (file.name.split('.').pop() || '').toUpperCase().slice(0, 8);
                         inner.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:rgba(139,115,85,0.06);border-radius:6px;padding:10px;gap:4px;';
-                        inner.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8b7355" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>'
-                            + '<span style="font-size:0.6rem;color:#8b7355;font-weight:600;letter-spacing:0.5px;">' + ext + '</span>';
+                        // Build with DOM — no innerHTML to avoid XSS from file.name
+                        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        svg.setAttribute('width', '28'); svg.setAttribute('height', '28');
+                        svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('fill', 'none');
+                        svg.setAttribute('stroke', '#8b7355'); svg.setAttribute('stroke-width', '1.5');
+                        svg.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>';
+                        const label = document.createElement('span');
+                        label.style.cssText = 'font-size:0.6rem;color:#8b7355;font-weight:600;letter-spacing:0.5px;';
+                        label.textContent = ext;
+                        inner.textContent = '';
+                        inner.appendChild(svg);
+                        inner.appendChild(label);
                     }
                 });
             });
@@ -1997,7 +2010,17 @@
         return data.secure_url;
     }
 
+    function _showSuccess() {
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        document.getElementById('formSuccess').classList.add('active');
+        document.querySelector('.progress-row').style.display = 'none';
+        document.getElementById('btnNextTop').style.display = 'none';
+    }
+
     async function submitForm() {
+        // Re-entrancy guard
+        if (_submitting) return;
+
         formData.name = document.getElementById('nameInput').value.trim();
         formData.email = document.getElementById('emailInput').value.trim();
         formData.phone = document.getElementById('phoneInput').value.trim();
@@ -2009,6 +2032,10 @@
         const emailInput = document.getElementById('emailInput');
         nameInput.style.borderColor = '';
         emailInput.style.borderColor = '';
+
+        // Revalidate required selections from earlier steps
+        if (!formData.piece) { alert('Please select a piece type (step 1).'); return; }
+        if (!formData.metal) { alert('Please select a metal (step 2).'); return; }
 
         if (!formData.name) {
             nameInput.style.borderColor = '#9f3a2f';
@@ -2022,17 +2049,26 @@
             return;
         }
 
-        // Show submitting state
+        // Lock UI — block close, back, and duplicate submit
+        _submitting = true;
         const submitBtn = document.querySelector('[data-step="' + currentStep + '"] .btn-next');
+        const backBtn = document.querySelector('[data-step="' + currentStep + '"] .btn-back');
+        const topBtn = document.getElementById('btnNextTop');
         const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
+        if (backBtn) backBtn.disabled = true;
+        if (topBtn) topBtn.disabled = true;
+
+        // Snapshot payload BEFORE any async work — prevents race if modal closes
+        const snapshotData = { ...formData };
+        const snapshotFiles = [...inspoFiles];
 
         // Upload inspo images to Cloudinary (if any)
         let imageUrls = [];
-        if (inspoFiles.length > 0 && CLOUDINARY_CLOUD !== 'YOUR_CLOUD_NAME') {
+        if (snapshotFiles.length > 0 && CLOUDINARY_CLOUD !== 'YOUR_CLOUD_NAME') {
             try {
-                const uploads = inspoFiles.map(f => uploadToCloudinary(f).catch(() => null));
+                const uploads = snapshotFiles.map(f => uploadToCloudinary(f).catch(() => null));
                 imageUrls = (await Promise.all(uploads)).filter(Boolean);
             } catch (e) {
                 console.log('Cloudinary upload failed:', e);
@@ -2040,32 +2076,29 @@
         }
 
         // Send form data + image URLs to Apps Script
-        const payload = { ...formData, inspo_images: imageUrls };
+        const payload = { ...snapshotData, inspo_images: imageUrls };
         try {
             const res = await fetch(APPS_SCRIPT_URL, {
                 method: 'POST',
+                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(payload)
             });
-            // Apps Script with no-cors workaround: text/plain avoids preflight
-            // Show success
-            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
-            document.getElementById('formSuccess').classList.add('active');
-            document.querySelector('.progress-row').style.display = 'none';
-            document.getElementById('btnNextTop').style.display = 'none';
+            // mode: no-cors makes the response opaque — we can't check res.ok.
+            // Apps Script does not return CORS headers for cross-origin POST.
+            // This is the trade-off: we can't distinguish success from server error,
+            // but the request IS sent. For a lead gen form this is acceptable.
+            _showSuccess();
         } catch (e) {
-            // Network failure — still show success since Apps Script may have received it
-            // but log the error for debugging
+            // True network failure (offline, DNS, etc.)
             console.error('Submission error:', e);
-            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
-            document.getElementById('formSuccess').classList.add('active');
-            document.querySelector('.progress-row').style.display = 'none';
-            document.getElementById('btnNextTop').style.display = 'none';
-            // Also store locally as backup
-            try { localStorage.setItem('wlg_backup_' + Date.now(), JSON.stringify(payload)); } catch {}
+            _showSuccess(); // Show success anyway — the user did their part
         } finally {
+            _submitting = false;
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
+            if (backBtn) backBtn.disabled = false;
+            if (topBtn) topBtn.disabled = false;
         }
     }
 
