@@ -703,6 +703,7 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .form-header {
             padding: 20px 32px;
@@ -1763,6 +1764,34 @@
         handleSelectedFiles(e.dataTransfer.files);
     });
 
+    // Thumbnail cache: File → dataURL string (avoids re-decoding on re-render)
+    const thumbCache = new WeakMap();
+
+    async function generateThumbnail(file) {
+        if (thumbCache.has(file)) return thumbCache.get(file);
+        try {
+            // createImageBitmap handles JPEG, PNG, WebP, GIF, and HEIC on Safari.
+            // On Chrome/Firefox it throws for HEIC — caught below.
+            const bitmap = await createImageBitmap(file);
+            const canvas = document.createElement('canvas');
+            const max = 320;
+            let w = bitmap.width, h = bitmap.height;
+            if (w > h) { h = Math.round(h * max / w); w = max; }
+            else { w = Math.round(w * max / h); h = max; }
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+            bitmap.close();
+            const url = canvas.toDataURL('image/jpeg', 0.82);
+            thumbCache.set(file, url);
+            return url;
+        } catch {
+            // Browser can't decode this format (e.g. HEIC on Chrome/Firefox)
+            thumbCache.set(file, null);
+            return null;
+        }
+    }
+
     function renderPreviews() {
         previews.innerHTML = '';
         if (inspoFiles.length > 0) {
@@ -1771,18 +1800,39 @@
             inspoFiles.forEach((file, i) => {
                 const div = document.createElement('div');
                 div.className = 'upload-preview';
-                const img = document.createElement('img');
-                const objectUrl = URL.createObjectURL(file);
-                img.src = objectUrl;
-                img.onload = () => URL.revokeObjectURL(objectUrl);
+
+                // Placeholder shown while thumbnail generates
+                const inner = document.createElement('div');
+                inner.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:rgba(139,115,85,0.06);border-radius:6px;gap:4px;';
+                inner.innerHTML = '<div style="width:20px;height:20px;border:2px solid rgba(139,115,85,0.3);border-top-color:#8b7355;border-radius:50%;animation:spin .8s linear infinite;"></div>';
+                div.appendChild(inner);
+
                 const btn = document.createElement('button');
                 btn.className = 'remove-btn';
                 btn.type = 'button';
                 btn.textContent = '×';
                 btn.onclick = (e) => { e.stopPropagation(); inspoFiles.splice(i, 1); renderPreviews(); };
-                div.appendChild(img);
                 div.appendChild(btn);
                 previews.appendChild(div);
+
+                // Generate thumbnail async
+                generateThumbnail(file).then(dataUrl => {
+                    // Guard: user may have removed this file while we were generating
+                    if (!div.parentNode) return;
+                    inner.innerHTML = '';
+                    if (dataUrl) {
+                        const img = document.createElement('img');
+                        img.src = dataUrl;
+                        inner.style.cssText = '';
+                        inner.replaceWith(img);
+                    } else {
+                        // Designed fallback for formats the browser can't decode
+                        const ext = (file.name.split('.').pop() || '').toUpperCase();
+                        inner.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:rgba(139,115,85,0.06);border-radius:6px;padding:10px;gap:4px;';
+                        inner.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8b7355" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>'
+                            + '<span style="font-size:0.6rem;color:#8b7355;font-weight:600;letter-spacing:0.5px;">' + ext + '</span>';
+                    }
+                });
             });
             if (inspoFiles.length < 5) {
                 const addMore = document.createElement('div');
