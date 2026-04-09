@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Westlake Goldsmiths — Bespoke Fine Jewelry</title>
+    <meta name="description" content="Bespoke fine jewelry, hand-crafted in the hills of Austin, Texas. Custom engagement rings, pendants, earrings, and heirloom pieces by master goldsmith Sam Tyson.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -83,6 +85,26 @@
             text-transform: uppercase;
             text-decoration: none;
             cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        nav .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        nav .hamburger span {
+            display: block;
+            width: 22px;
+            height: 1.5px;
+            background: var(--cream);
+            margin: 5px 0;
+            transition: all 0.3s;
         }
 
         nav .links {
@@ -237,7 +259,7 @@
 
         /* ── PHILOSOPHY ────────────────────────────────── */
         .philosophy {
-            padding: 8rem 2rem;
+            padding: 5rem 2rem;
             text-align: center;
             max-width: 840px;
             margin: 0 auto;
@@ -1111,13 +1133,32 @@
         /* ── RESPONSIVE ────────────────────────────────── */
         @media (max-width: 768px) {
             nav { padding: 1.2rem 1.5rem; }
-            nav .links { display: none; }
+            nav .hamburger { display: block; }
+            nav .links {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(26, 21, 18, 0.97);
+                backdrop-filter: blur(12px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2.5rem;
+                z-index: 99;
+            }
+            nav .links.open { display: flex; }
+            nav .links a { font-size: 1rem; letter-spacing: 0.15em; }
+            nav .links .cta-btn { padding: 1rem 2rem; font-size: 0.85rem; }
             nav .logo { font-size: 0.9rem; }
             .craft-inner { grid-template-columns: 1fr; gap: 3rem; }
             .gallery { grid-template-columns: 1fr 1fr; }
+            .gallery-item .caption { transform: translateY(0); }
             .steps { grid-template-columns: 1fr; gap: 3rem; }
             .footer-inner { grid-template-columns: 1fr 1fr; }
-            .philosophy { padding: 5rem 1.5rem; }
+            .philosophy { padding: 3.5rem 1.5rem; }
             .collection { padding: 3rem 1.5rem 5rem; }
             .craft { padding: 5rem 2rem; }
             .process { padding: 5rem 2rem; }
@@ -1125,6 +1166,11 @@
             .team-grid { grid-template-columns: 1fr 1fr; }
             .option-grid { grid-template-columns: 1fr; }
             .input-row { grid-template-columns: 1fr; }
+        }
+
+        /* Touch devices: always show gallery captions */
+        @media (hover: none) {
+            .gallery-item .caption { transform: translateY(0); }
         }
 
         @media (max-width: 480px) {
@@ -1140,7 +1186,10 @@
 <!-- ── NAVIGATION ──────────────────────────────────────── -->
 <nav id="mainNav">
     <a href="#" class="logo" onclick="event.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});">Westlake Goldsmiths</a>
-    <ul class="links">
+    <button class="hamburger" aria-label="Menu" onclick="document.querySelector('.links').classList.toggle('open'); this.classList.toggle('active');">
+        <span></span><span></span><span></span>
+    </button>
+    <ul class="links" onclick="this.classList.remove('open'); document.querySelector('.hamburger').classList.remove('active');">
         <li><a href="#philosophy">Philosophy</a></li>
         <li><a href="#collection">Collection</a></li>
         <li><a href="#craft">The Craft</a></li>
